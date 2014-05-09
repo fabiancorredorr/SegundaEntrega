@@ -1,0 +1,286 @@
+
+***Comando para comprobar la version e instalacion de django
+>>> import django
+>>> django.VERSION  
+__________________________________________________________________________________________
+---------INSTALACION MYSQL------------------------
+$sudo apt-get install mysql-server mysql-client
+Una vez instalado modificamos la password de administrador de la siguiente forma:
+
+$sudo /usr/bin/mysqladmin -u root password manager
+
+de esta manera le indico el super usuario(root) y password(manager) que admistrará la base. Habiendo hecho esto nos conectamos como root de la siguiente forma:
+
+$mysql -u root -p
+
+Nos solicitará la password que en este caso es manager.
+Ahora si quieres puedes crear una BD, ¿obviamente para eso instalamos mysql no? :). entonces una vez logeado como root creamos una base:
+
+$mysql>create database mybd;
+
+Listo ya creamos una base llamada mybd, ahora salimos
+
+$mysql>exit
+
+Existen muchos manuales en la red donde aparecen instrucciones de como crear tablas, procedimientos almacenados etc, por lo tanto aqui vamos a suponer que ya existe un script listo para generar una base de datos llamado genera-base.sql
+
+Entonces! nos posicionamos en el directorio donde esta este archivo .sql y ejecutamos el siguiente comando para correr el script:
+
+$mysql -u root -p mybd < genera-base.sql
+
+Volvemos a entrar como root para crear usuarios para esta base, en este caso usuario admin con pass adminbd, entonces entramos como root:
+
+$ mysql -u root -p
+
+una vez conectado corremos el siguiente comando para crear el usuario
+
+mysql>grant all privileges on mybd.* to admin@localhost identified by ‘adminbd’;
+mysql>flush privileges;
+
+Luego salimos para ingresar con el usuario creado:
+
+mysql> exit
+Bye
+
+Ahora entramos como usuario admin indicandole la BD de la siguiente forma:
+
+$mysql -u admin -p mybd
+Enter password:
+________________________________________________________________________________________________-
+
+COMANDOS BASICOS MYSQL
+
+
+show databases; – Listar todas las bases de datos.
+connect [database]; – Conectarse a esa base de datos.
+show tables; – Listar todas las tablas de una base de datos.
+show table status; – Muestra informacion sobre las tablas de la base de datos.
+describe [table]; – Muestra la estructura de una tabla de la base de datos.
+
+Manejo de bases de datos Mysql:
+drop table [table]; – Elimina la tabla, incluyendo registros y estructura.
+drop table if exists [table]; – Elimina la tabla de la base de datos, pero antes verifica que exista.
+truncate table [table]; – Elimina los registros, pero mantiene la esrtuctura de la tabla.
+rename table [table] to [nuevo nombre de tabla]; – Renombra una tabla de la base de datos.
+Algunos comandos utiles para cunsultas Mysql:
+select * from [table] limit [numero]; – Muestra los registros desde el 1 hasta [numero].
+Ej. select * from tabla limit 10; – Muestra los 10 primeros registros.
+select * from [table] limit [numero inicio],[numero]; – Muestra los registros desde el numero de inicio hasta numero inicio + numero.
+Ej. select * from tabla limit 11,10; – Muestra desde registro 11 hasta el 20.
+Bases de datos Mysql en consola:
+$ mysqladmin -u -p create – crear base de datos.
+$ mysqladmin -u -p drop – borrar la base de datos.
+$ mysqladmin -u root -p proc – listar procesos en ejecucion en el servidor de bases de datos Mysql.
+$ mysqladmin -u root -p -i 5 status – verificar status cada 5 segundos.
+$ mysqldump –opt -u -h -p > /path/to/file – Exportar base de datos a un archivo.
+$ mysqldump –opt -u -h –all-databases -p > /path/to/file – Exportar TODAS las bases de datos a un archivo.
+$ mysql -h -u -p < /path/to/file – Importar un archivo a la base de datos a mysql
+$ mysqlcheck -o -u root -p –all-databases – Optimizar las bases de datos mysql.
+Verificacion y reparacion de bases de datos erroneas:
+check table [table]; – Verificar la tabla.
+repair table [table]; – Reparar la tabla rota.
+_____________________________________________________________________________________________---
+
+VIRTUALENWRAPPER
+
+
+export WORKON_HOME=~/Envs
+$ source /usr/local/bin/virtualenvwrapper.sh
+Basic Usage
+Create a virtual environment:
+$ mkvirtualenv venv
+This creates the venv folder inside ~/Envs.
+
+Work on a virtual environment:
+$ workon venv
+virtualenvwrapper provides tab-completion on environment names. It really helps when you have a lot of environments and have trouble remembering their names.
+
+workon also deactivates whatever environment you are currently in, so you can quickly switch between environments.
+
+Deactivating is still the same:
+$ deactivate
+To delete:
+$ rmvirtualenv venv
+Other useful commands
+lsvirtualenv
+List all of the environments.
+cdvirtualenv
+Navigate into the directory of the currently activated virtual environment, so you can browse its site-packages, for example.
+cdsitepackages
+Like the above, but directly into site-packages directory.
+lssitepackages
+Shows contents of site-packages directory.
+
+
+_________________________________________________________________________________________________
+CREAR UN PROYECTO DJANGO
+
+Change into the directory you created, and run the command django-admin.py startproject mysite. This will create a mysite directory in your current directory.
+
+INICIAR EL SERVIDOR
+
+To start the server, change into your project container directory (cd mysite), if you haven’t already, and run this command:
+
+python manage.py runserver
+
+
+Entrar a la base de datos del proyecto
+
+ manage.py dbshell
+
+____________________________________________________________________________________________________________________-
+How Django Processes a Request
+
+In summary:
+
+A request comes in to /hello/.
+Django determines the root URLconf by looking at the ROOT_URLCONF setting.
+Django looks at all of the URLpatterns in the URLconf for the first one that matches /hello/.
+If it finds a match, it calls the associated view function.
+The view function returns an HttpResponse.
+Django converts the HttpResponse to the proper HTTP response, which results in a Web page.
+________________________________________________________________________________________________________________-
+INTERACTIVE INTERPRETER PYTHON Y CREACION DE PROYECTO
+
+From the mysite project directory created by django-admin.py startproject (as covered in Chapter 2), type python manage.py shell to start the interactive interpreter.
+______________________________________________________________________________________________________________________
+
+VERIFICAR CONFIGURACION DE MYSQL
+EN EL INTERPRETE INTERACTIVO:
+
+>>> from django.db import connection
+>>> cursor = connection.cursor()
+
+si no sale nada esta bien configurada
+
+
+
+
+_____________________________________________________________________________________________________________________
+
+CREAR LA APLICACION
+
+Within the mysite project directory, type this command to create a books app:
+
+python manage.py startapp books
+______________________________________________________
+
+VALIDAR QUE LOS MODELOS ESTEN ESCRITOS CORRECTAMENTE    PREVIAMENTE INCLUIR EL MODELO EN EL SETTINGS.PY INSTALLED APPS
+
+python manage.py validate
+
+______________________________________________________
+
+MUESTRA LAS CONSULTAS DE CRACION QUE SE VAN A REALIZAR
+
+python manage.py sqlall books
+
+_____________________________________________________
+
+EJECUTA LAS CONSULTAS EN LA BASE DE DATOS, si ya hay algo creado no ejecuta....
+
+python manage.py syncdb
+
+
+___________________________________________
+
+IMPORTAR MODELOS AL SHELL
+from nombreapp.models import Modelo1, Modelo2
+
+Modelo1.objects.all()
+
+___________________________________________
+
+CREAR OBJETOS EN LA BASE DE DATOS 
+
+p1 = Publisher.objects.create(name='Apress',
+...     address='2855 Telegraph Avenue',
+...     city='Berkeley', state_province='CA', country='U.S.A.',
+...     website='http://www.apress.com/')
+
+
+___________________________________________
+
+
+MOSTRAR TODOS LOS OBJETOS CREADOS
+
+>>> Publisher.objects.all()
+[<Publisher: Apress>, <Publisher: O'Reilly>]
+
+____________________________________________
+
+FILTRAR BUSQUEDAS
+
+Retornan listas
+
+>>> Publisher.objects.filter(country="U.S.A.", state_province="CA")
+[<Publisher: Apress>]
+
+
+>>> Publisher.objects.filter(name__contains="press")
+[<Publisher: Apress>]
+
+
+Retorna solo un objeto
+
+>>> Publisher.objects.get(name="Apress")
+<Publisher: Apress>
+
+Retornar los objetos en orden
+
+>>> Publisher.objects.order_by("name")
+[<Publisher: Apress>, <Publisher: O'Reilly>]
+
+Busquedas encadenadas
+
+>>> Publisher.objects.filter(country="U.S.A.").order_by("-name")
+[<Publisher: O'Reilly>, <Publisher: Apress>]
+___________________________________________
+
+>>> Publisher.objects.filter(id=52).update(name='Apress Publishing')
+
+__________________________________________
+
+BORRAR OBJETOS 
+
+>>> p = Publisher.objects.get(name="O'Reilly")
+>>> p.delete()
+>>> Publisher.objects.all()
+___________________________________________
+
+Controlar objetos que no existen
+
+try:
+    p = Publisher.objects.get(name='Apress')
+except Publisher.DoesNotExist:
+    print "Apress isn't in the database yet."
+else:
+    print "Apress is in the database."
+
+
+
+____________________________________________________________________________________________________________________________________-
+
+MVC
+
+ In this pattern, “Model” refers to the data access layer, “View” refers to the part of the system that selects what to display and how to display it, and “Controller” refers to the part of the system that decides which view to use
+ 
+ 
+MVC DJANGO
+
+M, the data-access portion, is handled by Django’s database layer, which is described in this chapter.
+V, the portion that selects which data to display and how to display it, is handled by views and templates.
+C, the portion that delegates to a view depending on user input, is handled by the framework itself by following your URLconf and calling the appropriate Python function for the given URL.
+
+MTV DJANGO
+
+M stands for “Model,” the data access layer. This layer contains anything and everything about the data: how to access it, how to validate it, which behaviors it has, and the relationships between the data.
+T stands for “Template,” the presentation layer. This layer contains presentation-related decisions: how something should be displayed on a Web page or other type of document.
+V stands for “View,” the business logic layer. This layer contains the logic that access the model and defers to the 
+appropriate template(s). You can think of it as the bridge between models and templates.
+ 
+ 
+  you may consider Django views to be the “controllers” and Django templates to be the “views.”
+  
+  
+  
