@@ -1,0 +1,6 @@
+from django.contrib import admin
+from Gestor.appgestor.models import Proyecto, Tarea
+
+admin.site.register(Proyecto)
+admin.site.register(Tarea)
+
